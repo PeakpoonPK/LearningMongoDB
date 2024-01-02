@@ -36,7 +36,10 @@ const movieSchema = new mongoose.Schema({
 });
 
 const Movie = mongoose.model('Movie', movieSchema)
-const amadeus = new Movie({ title: "Amadeus", year: 1986, score: 9.2, rating: "R" })
+// const amadeus = new Movie({ title: "Amadeus", year: 1986, score: 9.2, rating: "R" })
+
+// const blah = new  Movie();
+// blah.save()
 
 Movie.insertMany([
     { title: "Amelie", year: 2001, score: 8.3, rating: "R" },
@@ -45,3 +48,8 @@ Movie.insertMany([
     { title: "Stand By Me", year: 1986, score: 8.6, rating: "R" },
     { title: "Moonrise Kingdom", year: 2012, score: 7.3, rating: "PG-13" }
 ])
+
+    .then(data => {
+        console.log("IT WORK!")
+        console.log(data)
+    })
