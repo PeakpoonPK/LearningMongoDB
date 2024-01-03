@@ -18,7 +18,7 @@ const productSchema = new mongoose.Schema({
     price: {
         type: Number,
         require: true,
-        min: 0
+        min: [0, 'Price is positive']
     },
     onsale: {
         type: Boolean,
@@ -37,10 +37,45 @@ const productSchema = new mongoose.Schema({
             type: Number,
             default: 0
         }
+    },
+    sixe: {
+        type: String,
+        enum: [s, m, l]
     }
 })
 
+// productSchema.methods.greet = function () {
+//     console.log("HELLO!!! HI! HOWDY!!!")
+// }
+
+productSchema.methods.toggleOnSale = function () {
+    this.onSale = !this.onSale;
+    return this.save();
+}
+
+productSchema.methods.addCategory = function (newCat) {
+    this.categories.push(newCat);
+    return this.save()
+}
+
+productSchema.statics.fireSale = function () {
+    return this.updateMany({}, { onSale: true, price: 0 })
+}
+
 const Product = mongoose.model('Product', productSchema)
+
+
+const findProduct = async () => {
+    const foundProduct = await Product.findOne({ name: 'Mountain Bike' });
+    console.log(foundProduct)
+    await foundProduct.toggleOnSale();
+    console.log(foundProduct)
+    await foundProduct.addCategory('Outdoors')
+    console.log(foundProduct)
+}
+Product.fireSale().then(res => console.log(res))
+
+
 
 // const bike = new Product({ name: "Tire Pump", price: 19.50, categories: ['Cycling', 'Safety', 123] })
 
@@ -54,12 +89,12 @@ const Product = mongoose.model('Product', productSchema)
 //         console.log((err))
 //     })
 
-Product.findOneAndUpdate({ name: 'Tire Pump' }, { price: -19.99 }, { new: true, runValidators: true })
-    .then(data => {
-        console.log("IT WORKED")
-        console.log(data)
-    })
-    .catch(err => {
-        console.log("OH ON ERROR")
-        console.log((err))
-    })
+// Product.findOneAndUpdate({ name: 'Tire Pump' }, { price: 19.99 }, { new: true, runValidators: true })
+//     .then(data => {
+//         console.log("IT WORKED")
+//         console.log(data)
+//     })
+//     .catch(err => {
+//         console.log("OH ON ERROR")
+//         console.log((err))
+//     })
